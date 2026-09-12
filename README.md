@@ -7,5 +7,6 @@ Working on code so that the Vigocan takes Live act of presence.
 
 Time is NOT fractal :-/ 
 
-	Visit offical [Protocol Vigocan™](https://vigocan.com).
-
+<p align="center">
+Visit offical [Protocol Vigocan™](https://vigocan.com).
+</p>
