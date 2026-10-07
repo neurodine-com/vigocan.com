@@ -1,0 +1,213 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -500 1000 1000" width="100%" height="100%">
+  <defs>
+    <!-- Dynamiczna poświata spoczynkowa -->
+    <filter id="bio-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="blur">
+        <animate attributeName="stdDeviation" 
+                 values="2; 5.5; 2" 
+                 dur="6s" 
+                 repeatCount="indefinite" 
+                 calcMode="spline" 
+                 keyTimes="0; 0.45; 1" 
+                 keySplines="0.4 0 0.2 1; 0.4 0 0.2 1" />
+      </feGaussianBlur>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Paleta barw: faza tlenowa / krew żylna i tętnicza / stan alfa -->
+    <linearGradient id="arterial-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4facfe"/>
+      <stop offset="50%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#f093fb"/>
+    </linearGradient>
+
+    <linearGradient id="pulse-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff758c"/>
+      <stop offset="100%" stop-color="#ff7eb3"/>
+    </linearGradient>
+
+    <linearGradient id="micro-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd269"/>
+      <stop offset="100%" stop-color="#ff9f43"/>
+    </linearGradient>
+
+    <!-- Podstawowe ramię spiralne Triskelionu -->
+    <path id="arm" 
+          d="M 0,0 
+             C 25,-40 70,-80 120,-75 
+             C 175,-70 215,-20 205,35 
+             C 195,85 145,115 105,100 
+             C 70,85 60,45 80,25 
+             C 95,10 118,18 116,33 
+             C 114,45 102,46 100,40" 
+          fill="none" 
+          stroke-linecap="round"/>
+
+    <!-- L0: Atomowy moduł triskelionu -->
+    <g id="triskelion-unit">
+      <use href="#arm" stroke="url(#arterial-grad)" stroke-width="4.2"/>
+      <use href="#arm" stroke="url(#arterial-grad)" stroke-width="4.2" transform="rotate(120)"/>
+      <use href="#arm" stroke="url(#arterial-grad)" stroke-width="4.2" transform="rotate(240)"/>
+    </g>
+
+    <!-- L1: Pod-struktura fraktalna -->
+    <g id="triskelion-l1">
+      <use href="#triskelion-unit"/>
+      <!-- Węzły na 3 pętlach ramion -->
+      <g transform="translate(135, 40) scale(0.38)">
+        <use href="#triskelion-unit" stroke="url(#pulse-grad)"/>
+      </g>
+      <g transform="rotate(120) translate(135, 40) scale(0.38)">
+        <use href="#triskelion-unit" stroke="url(#pulse-grad)"/>
+      </g>
+      <g transform="rotate(240) translate(135, 40) scale(0.38)">
+        <use href="#triskelion-unit" stroke="url(#pulse-grad)"/>
+      </g>
+    </g>
+
+    <!-- L2: Głęboka rekurencja zawierająca poziom L3 (mikro-triskeliony) -->
+    <g id="triskelion-l2">
+      <use href="#triskelion-l1"/>
+      
+      <!-- Poziom 3 (L3): 3 klastry na pętlach podgałęzi, obracające się w rytmie oddechu (6s) -->
+      <g transform="translate(135, 40) scale(0.4)">
+        <g class="spin-l3">
+          <use href="#triskelion-l1" stroke="url(#micro-grad)" transform="scale(0.36)"/>
+        </g>
+      </g>
+      <g transform="rotate(120) translate(135, 40) scale(0.4)">
+        <g class="spin-l3">
+          <use href="#triskelion-l1" stroke="url(#micro-grad)" transform="scale(0.36)"/>
+        </g>
+      </g>
+      <g transform="rotate(240) translate(135, 40) scale(0.4)">
+        <g class="spin-l3">
+          <use href="#triskelion-l1" stroke="url(#micro-grad)" transform="scale(0.36)"/>
+        </g>
+      </g>
+    </g>
+
+    <style>
+      .bg { fill: #04060c; }
+
+      /* Rytm oddechu (Spoczynek: 6.0 sekund na cykl) */
+      .respiration-cycle {
+        transform-origin: 0px 0px;
+        animation: breathe 6.0s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+      }
+
+      /* Rytm tętna (60 BPM = dokładnie 1.0 sekunda na uderzenie z falą skurczową) */
+      .cardiac-pulse {
+        transform-origin: 0px 0px;
+        animation: heartbeat 1.0s cubic-bezier(0.2, 0.9, 0.3, 1) infinite;
+      }
+
+      /* Prędkości obrotu zharmonizowane z krotnościami oddechu (6s) */
+      .spin-core {
+        transform-origin: 0px 0px;
+        animation: rotCW 48s linear infinite; /* 8 oddechów */
+      }
+
+      .spin-l1 {
+        transform-origin: 0px 0px;
+        animation: rotCCW 24s linear infinite; /* 4 oddechy */
+      }
+
+      .spin-l2 {
+        transform-origin: 0px 0px;
+        animation: rotCW 12s linear infinite; /* 2 oddechy */
+      }
+
+      .spin-l3 {
+        transform-origin: 0px 0px;
+        animation: rotCCW 6s linear infinite; /* 1 oddech */
+      }
+
+      .aura-breath {
+        transform-origin: 0px 0px;
+        animation: auraBreathe 6.0s ease-in-out infinite;
+      }
+
+      @keyframes rotCW {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes rotCCW {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(-360deg); }
+      }
+
+      /* Wdech (0-45%): powolny wzrost objętości; Wydech (45-100%): powrót i spoczynek */
+      @keyframes breathe {
+        0%   { transform: scale(0.92); opacity: 0.88; }
+        45%  { transform: scale(1.08); opacity: 1.0; }
+        100% { transform: scale(0.92); opacity: 0.88; }
+      }
+
+      /* Fala tętna: pik skurczu komory (systole) + odbicie dikrotyczne */
+      @keyframes heartbeat {
+        0%   { transform: scale(1.0); }
+        12%  { transform: scale(1.35); }
+        24%  { transform: scale(1.08); }
+        36%  { transform: scale(1.18); }
+        55%  { transform: scale(1.0); }
+        100% { transform: scale(1.0); }
+      }
+
+      @keyframes auraBreathe {
+        0%   { r: 310px; stroke-opacity: 0.2; }
+        45%  { r: 370px; stroke-opacity: 0.6; }
+        100% { r: 310px; stroke-opacity: 0.2; }
+      }
+    </style>
+  </defs>
+
+  <!-- Tło kosmicznej nocy -->
+  <rect x="-500" y="-500" width="1000" height="1000" class="bg"/>
+
+  <!-- Pierścienie rezonansu oddechowo-krążeniowego -->
+  <circle cx="0" cy="0" r="320" fill="none" stroke="#4facfe" stroke-width="1.5" class="aura-breath" filter="url(#bio-glow)"/>
+  <circle cx="0" cy="0" r="390" fill="none" stroke="#f093fb" stroke-width="1" stroke-dasharray="6 18" opacity="0.35">
+    <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="96s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- GŁÓWNY FRAKTAL OBJĘTY RYTMEM ODDECHU (6.0s) -->
+  <g class="respiration-cycle" filter="url(#bio-glow)">
+    
+    <!-- Rotacja rdzenia (48.0s) -->
+    <g class="spin-core">
+      <!-- Pień główny -->
+      <use href="#triskelion-unit" transform="scale(1.2)"/>
+
+      <!-- 3 Główne ramiona fraktalne niosące poziomy L1 -> L2 -> L3 -->
+      <g transform="translate(162, 48)">
+        <g class="spin-l1">
+          <use href="#triskelion-l2" transform="scale(0.52)"/>
+        </g>
+      </g>
+
+      <g transform="rotate(120) translate(162, 48)">
+        <g class="spin-l1">
+          <use href="#triskelion-l2" transform="scale(0.52)"/>
+        </g>
+      </g>
+
+      <g transform="rotate(240) translate(162, 48)">
+        <g class="spin-l1">
+          <use href="#triskelion-l2" transform="scale(0.52)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- CENTRALNE JĄDRO TĘTNA (60 uderzeń/min = 1.0s) -->
+    <g class="cardiac-pulse">
+      <circle cx="0" cy="0" r="7" fill="#ff758c" opacity="0.95"/>
+      <circle cx="0" cy="0" r="14" fill="none" stroke="#ff7eb3" stroke-width="1.8" opacity="0.75"/>
+    </g>
+  </g>
+</svg>

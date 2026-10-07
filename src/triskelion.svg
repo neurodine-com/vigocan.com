@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-400 -400 800 800" width="100%" height="100%">
+  <defs>
+    <!-- Efekt poświaty (Glow) -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Gradienty reprezentujące żywioły / fazy cyklu -->
+    <linearGradient id="spiralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="50%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#f093fb" />
+    </linearGradient>
+
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6d365" />
+      <stop offset="100%" stop-color="#fda085" />
+    </linearGradient>
+
+    <!-- Pojedyncze ramię spirali Triskelionu (krzywa Béziera zwijająca się ku końcowi) -->
+    <path id="triskelion-arm" 
+          d="M 0,0 
+             C 25,-40 70,-80 120,-75 
+             C 175,-70 215,-20 205,35 
+             C 195,85 145,115 105,100 
+             C 70,85 60,45 80,25 
+             C 95,10 118,18 116,33 
+             C 114,45 102,46 100,40" 
+          fill="none" 
+          stroke-linecap="round" />
+
+    <!-- Podstawowy moduł Triskelionu (3 ramiona obrócone o 120 stopni) -->
+    <g id="triskelion-base">
+      <use href="#triskelion-arm" stroke="url(#spiralGrad)" stroke-width="4.5"/>
+      <use href="#triskelion-arm" stroke="url(#spiralGrad)" stroke-width="4.5" transform="rotate(120)"/>
+      <use href="#triskelion-arm" stroke="url(#spiralGrad)" stroke-width="4.5" transform="rotate(240)"/>
+      <!-- Centralny punkt skupienia -->
+      <circle cx="0" cy="0" r="5" fill="#f093fb" filter="url(#glow)"/>
+    </g>
+
+    <!-- Poziom fraktalny 1: Triskelion z podczepionymi miniaturami na końcach ramion -->
+    <g id="triskelion-fractal-branch">
+      <use href="#triskelion-base"/>
+      <!-- Odgałęzienia rzędu 2 (liście fraktala) na 3 szczytach pętli ramion (r=170) -->
+      <g transform="translate(140, 45) scale(0.38) rotate(30)">
+        <use href="#triskelion-base" stroke="url(#goldGrad)"/>
+      </g>
+      <g transform="rotate(120) translate(140, 45) scale(0.38) rotate(30)">
+        <use href="#triskelion-base" stroke="url(#goldGrad)"/>
+      </g>
+      <g transform="rotate(240) translate(140, 45) scale(0.38) rotate(30)">
+        <use href="#triskelion-base" stroke="url(#goldGrad)"/>
+      </g>
+    </g>
+
+    <!-- Styl animacji CSS -->
+    <style>
+      .bg { fill: #080915; }
+      
+      /* Rotacja rdzenia głównego */
+      .spin-main {
+        transform-origin: center;
+        animation: rotateClockwise 24s linear infinite, breathe 6s ease-in-out infinite alternate;
+      }
+      
+      /* Przeciwbieżna rotacja gałęzi fraktalnych */
+      .spin-sub-1 {
+        transform-origin: 0px 0px;
+        animation: rotateCounter 12s linear infinite;
+      }
+
+      .spin-sub-2 {
+        transform-origin: 0px 0px;
+        animation: rotateCounter 12s linear infinite;
+      }
+
+      .spin-sub-3 {
+        transform-origin: 0px 0px;
+        animation: rotateCounter 12s linear infinite;
+      }
+
+      /* Pulsowanie aury fraktala */
+      .pulse-ring {
+        transform-origin: center;
+        animation: ringPulse 4s ease-in-out infinite alternate;
+      }
+
+      @keyframes rotateClockwise {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes rotateCounter {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(-360deg); }
+      }
+
+      @keyframes breathe {
+        0% { transform: scale(0.92); }
+        100% { transform: scale(1.05); }
+      }
+
+      @keyframes ringPulse {
+        0% { r: 270px; opacity: 0.25; stroke-width: 1.5px; }
+        100% { r: 310px; opacity: 0.65; stroke-width: 3px; }
+      }
+    </style>
+  </defs>
+
+  <!-- Tło kosmicznej pustki -->
+  <rect x="-400" y="-400" width="800" height="800" class="bg"/>
+
+  <!-- Zewnętrzne kręgi rezonansowe -->
+  <circle cx="0" cy="0" r="290" fill="none" stroke="#4facfe" class="pulse-ring" filter="url(#glow)"/>
+  <circle cx="0" cy="0" r="330" fill="none" stroke="#f093fb" stroke-dasharray="8 16" opacity="0.4">
+    <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="60s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- GŁÓWNA STRUKTURA FRAKTALNA -->
+  <g class="spin-main" filter="url(#glow)">
+    
+    <!-- Centralny pień triskelionu -->
+    <use href="#triskelion-base" transform="scale(1.1)"/>
+
+    <!-- Fraktalne poddrzewa rzędu 1 umieszczone w węzłach ramion -->
+    <g transform="translate(135, 40)">
+      <g class="spin-sub-1">
+        <use href="#triskelion-fractal-branch" transform="scale(0.48)"/>
+      </g>
+    </g>
+
+    <g transform="rotate(120) translate(135, 40)">
+      <g class="spin-sub-2">
+        <use href="#triskelion-fractal-branch" transform="scale(0.48)"/>
+      </g>
+    </g>
+
+    <g transform="rotate(240) translate(135, 40)">
+      <g class="spin-sub-3">
+        <use href="#triskelion-fractal-branch" transform="scale(0.48)"/>
+      </g>
+    </g>
+
+    <!-- Drobne iskry / mikro-węzły w punktach zbiegu -->
+    <circle cx="0" cy="0" r="8" fill="#ffffff" opacity="0.9" filter="url(#glow)"/>
+  </g>
+</svg>
